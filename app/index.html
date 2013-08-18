@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- Beyondem Inc. http://Beyondem.com -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Is It Compromised? - Instantly check if a Password is compromised</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+   <style type="text/css">html,body{height:100%; }#wrap{min-height:100%;height:auto!important;height:100%;margin:0 auto -60px;}#push,#footer{height:60px;}#footer{background-color:#f5f5f5;}@media (max-width: 767px) {#footer{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;}}.container .credit{margin:20px 0;}code{font-size:80%;}#subline{padding-top:30px;}</style>
+   <link href="css/bootstrap-responsive.css" rel="stylesheet">
+  </head>
+
+  <body>
+<div id="wrap">
+<div id="box" style="width:100%; position:absolute; top:40%">
+    <center>
+      <h1><v>Is it compromised?</b></h1>
+       <input id = "search" type="text" class="input-lg" placeholder="Password" onKeyUp="check();">
+     
+<div id="result"></div>
+</center>
+</div>
+
+<div id="footer">
+<div class="container">
+<div id="bottombar" class="muted credit" style='width:100%; display:inline; align:right'>
+
+<p class="navbar-text pull-right">
+<script id="_wauh4g">var _wau = _wau || []; _wau.push(["classic", "shrvlleeh5ar", "h4g"]);
+(function() {var s=document.createElement("script"); s.async=true;
+s.src="http://widgets.amung.us/classic.js";
+document.getElementsByTagName("head")[0].appendChild(s);
+})();</script>
+</p>
+  <br>
+<a data-toggle="modal" href="#about" class="btn btn-primary"><i class="icon-white icon"></i> About</a>
+
+
+</div>
+</div>
+</div>
+
+
+
+  <div class="modal" id="about">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">About</h4>
+        </div>
+        <div class="modal-body">
+         Is It Compromised keeps a database of all leaked passwords / password lists. When you enter a password, it is hashed <b>before</b> it is sent to the server. The server checks if this hash is in its database and lets you know. This site is built with NodeJS using Websockets and a MongoDB. 
+         <br>Like it and want it to keep running? Here is my Bitcoin Address: <a href="bitcoin:1JAotH9xy39pNEQUZqRqRMYwx4GzL5iK5S">1JAotH9xy39pNEQUZqRqRMYwx4GzL5iK5S</a>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-white icon-remove"></i> Close</a>
+        </div>
+      </div>
+    </div>
+  </div>
+   <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+ <script src="js/socket.io.min.js"></script>
+ <script src="js/md5-min.js"></script>
+    <script>
+    var socket;
+
+  function connect() {
+      socket = io.connect('127.0.0.1:8080');
+      socket.on('connect', function() {
+          console.log("Connected");
+          socket.on('result', function(data) {
+              resultdata = data['result'];
+              if (resultdata == "1") {
+                  $("#result").html("<b><font size=15 color='white'>YES</font></b><br><font color='white' size=2>Found in a password list database. Maybe not the best idea to use it.</font>");
+                  document.body.style.background = "red";
+              } else {
+                  $("#result").html("<b><font size=15 color='white'>NO</font></b><br><font color='white' size=2> This dosn't necessarily mean this is a good password. It just means it's not in our database.</font>");
+                  document.body.style.background = "#2EFE2E";
+              }
+          });
+      });
+
+      socket.on('disconnected', function(player) {
+          console.log("Disconnected");
+      });
+  }
+
+
+
+  jQuery(document).ready(function($) {
+      connect();
+      $('#static').modal('show')
+  });
+
+
+  function check() {
+      var password = $("#search").val();
+      if (password != "") {
+          password = hex_md5(password);
+          $("#result").html("");
+          $("#result").html("<font color='white'>Searching<img src='images/loading.gif'></font>");
+          socket.emit('data', password);
+
+      } else {
+          $("#result").html("");
+      }
+  }
+
+    </script>
+  </body>
+</html>
